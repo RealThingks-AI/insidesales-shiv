@@ -128,8 +128,10 @@ const UserDashboard = ({ hideHeader = false }: UserDashboardProps) => {
       }
     };
     
-    // Use requestAnimationFrame for better timing on initial render
-    const rafId = requestAnimationFrame(updateWidth);
+    // Use double requestAnimationFrame for better timing on initial render
+    const rafId = requestAnimationFrame(() => {
+      requestAnimationFrame(updateWidth);
+    });
     
     const observer = new ResizeObserver((entries) => {
       if (entries[0]?.contentRect?.width > 0) {
@@ -1756,7 +1758,7 @@ const UserDashboard = ({ hideHeader = false }: UserDashboardProps) => {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden" ref={containerRef}>
+    <div className="flex flex-col h-full overflow-hidden">
       {/* Search bar header - stays fixed at top, never scrolls */}
       <div className="flex-shrink-0 px-2 sm:px-4 py-3 bg-background flex items-center justify-between flex-wrap gap-4">
         {/* Global Search - Left Side */}

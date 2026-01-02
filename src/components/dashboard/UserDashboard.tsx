@@ -92,7 +92,8 @@ const UserDashboard = ({ hideHeader = false }: UserDashboardProps) => {
   const queryClient = useQueryClient();
   const [isResizeMode, setIsResizeMode] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState(1200);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const [isContainerReady, setIsContainerReady] = useState(false);
   
   const [pendingWidgetChanges, setPendingWidgetChanges] = useState<Set<WidgetKey>>(new Set());
   const [originalState, setOriginalState] = useState<{
@@ -116,27 +117,34 @@ const UserDashboard = ({ hideHeader = false }: UserDashboardProps) => {
   useEffect(() => {
     const updateWidth = () => {
       if (containerRef.current) {
-        // Get computed styles to account for padding
         const styles = getComputedStyle(containerRef.current);
         const paddingLeft = parseFloat(styles.paddingLeft) || 0;
         const paddingRight = parseFloat(styles.paddingRight) || 0;
-        // Use inner width (excluding padding) for accurate grid sizing
         const width = containerRef.current.clientWidth - paddingLeft - paddingRight;
-        setContainerWidth(Math.max(320, width));
+        if (width > 0) {
+          setContainerWidth(Math.max(320, width));
+          setIsContainerReady(true);
+        }
       }
     };
     
-    // ResizeObserver for container size changes
-    const observer = new ResizeObserver(updateWidth);
+    // Use requestAnimationFrame for better timing on initial render
+    const rafId = requestAnimationFrame(updateWidth);
+    
+    const observer = new ResizeObserver((entries) => {
+      if (entries[0]?.contentRect?.width > 0) {
+        updateWidth();
+      }
+    });
+    
     if (containerRef.current) {
       observer.observe(containerRef.current);
     }
     
-    // Also listen to window resize for viewport changes
     window.addEventListener('resize', updateWidth);
-    updateWidth();
     
     return () => {
+      cancelAnimationFrame(rafId);
       observer.disconnect();
       window.removeEventListener('resize', updateWidth);
     };
@@ -1824,17 +1832,25 @@ const UserDashboard = ({ hideHeader = false }: UserDashboardProps) => {
       </div>
 
       {/* Scrollable widgets area - only this part scrolls */}
-      <div className="flex-1 overflow-auto px-2 sm:px-4 py-4">
-        <ResizableDashboard
-        isResizeMode={isResizeMode}
-        visibleWidgets={visibleWidgets}
-        widgetLayouts={widgetLayouts}
-        pendingWidgetChanges={pendingWidgetChanges}
-        onLayoutChange={handleLayoutChange}
-        onWidgetRemove={handleWidgetRemove}
-        renderWidget={renderWidget}
-        containerWidth={containerWidth}
-        />
+      <div className="flex-1 overflow-auto px-2 sm:px-4 py-4" ref={containerRef}>
+        {isContainerReady ? (
+          <ResizableDashboard
+            isResizeMode={isResizeMode}
+            visibleWidgets={visibleWidgets}
+            widgetLayouts={widgetLayouts}
+            pendingWidgetChanges={pendingWidgetChanges}
+            onLayoutChange={handleLayoutChange}
+            onWidgetRemove={handleWidgetRemove}
+            renderWidget={renderWidget}
+            containerWidth={containerWidth}
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-pulse">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="h-32 rounded-lg bg-muted/50" />
+            ))}
+          </div>
+        )}
       </div>
       
       {/* Modals - outside scrollable area */}

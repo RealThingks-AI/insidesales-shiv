@@ -128,10 +128,8 @@ const UserDashboard = ({ hideHeader = false }: UserDashboardProps) => {
       }
     };
     
-    // Use double requestAnimationFrame for better timing on initial render
-    const rafId = requestAnimationFrame(() => {
-      requestAnimationFrame(updateWidth);
-    });
+    // Initial measurement with a small delay to ensure DOM is ready
+    const timeoutId = setTimeout(updateWidth, 50);
     
     const observer = new ResizeObserver((entries) => {
       if (entries[0]?.contentRect?.width > 0) {
@@ -146,7 +144,7 @@ const UserDashboard = ({ hideHeader = false }: UserDashboardProps) => {
     window.addEventListener('resize', updateWidth);
     
     return () => {
-      cancelAnimationFrame(rafId);
+      clearTimeout(timeoutId);
       observer.disconnect();
       window.removeEventListener('resize', updateWidth);
     };

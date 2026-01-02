@@ -698,29 +698,11 @@ const LeadTable = forwardRef<LeadTableRef, LeadTableProps>(({
                                 {getLeadInitials(lead.lead_name)}
                               </div>
                               <button 
-                                onClick={() => {
-                                  setEditingLead(lead);
-                                  setShowModal(true);
-                                }} 
+                                onClick={() => handleViewLead(lead)} 
                                 className="text-primary hover:underline font-medium text-left truncate"
                               >
                                 <HighlightedText text={lead.lead_name} highlight={debouncedSearchTerm} />
                               </button>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button 
-                                      variant="ghost" 
-                                      size="icon" 
-                                      className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                      onClick={() => handleViewLead(lead)}
-                                    >
-                                      <Eye className="h-3.5 w-3.5" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>View Details</TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
                             </div>
                           ) : column.field === 'account_company_name' ? (
                             <button 

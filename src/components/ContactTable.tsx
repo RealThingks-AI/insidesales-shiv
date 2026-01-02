@@ -685,7 +685,10 @@ export const ContactTable = forwardRef<ContactTableRef, ContactTableProps>(({
                               {getContactInitials(contact.contact_name)}
                             </div>
                             <button
-                              onClick={() => handleEditContact(contact)}
+                              onClick={() => {
+                                setViewingContact(contact);
+                                setShowDetailModal(true);
+                              }}
                               className="text-primary hover:underline font-medium text-left truncate"
                             >
                               <HighlightedText text={contact.contact_name} highlight={debouncedSearchTerm} />

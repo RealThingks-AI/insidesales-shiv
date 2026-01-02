@@ -92,8 +92,10 @@ const UserDashboard = ({ hideHeader = false }: UserDashboardProps) => {
   const queryClient = useQueryClient();
   const [isResizeMode, setIsResizeMode] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const [isContainerReady, setIsContainerReady] = useState(false);
+  // Initialize with a reasonable default based on window width minus sidebar
+  const [containerWidth, setContainerWidth] = useState(() => {
+    return typeof window !== 'undefined' ? Math.max(320, window.innerWidth - 280) : 800;
+  });
   
   const [pendingWidgetChanges, setPendingWidgetChanges] = useState<Set<WidgetKey>>(new Set());
   const [originalState, setOriginalState] = useState<{
@@ -115,7 +117,7 @@ const UserDashboard = ({ hideHeader = false }: UserDashboardProps) => {
   const { createTask, updateTask } = useTasks();
 
   useEffect(() => {
-    const updateWidth = () => {
+    const updateWidth = (): boolean => {
       if (containerRef.current) {
         const styles = getComputedStyle(containerRef.current);
         const paddingLeft = parseFloat(styles.paddingLeft) || 0;
@@ -123,18 +125,32 @@ const UserDashboard = ({ hideHeader = false }: UserDashboardProps) => {
         const width = containerRef.current.clientWidth - paddingLeft - paddingRight;
         if (width > 0) {
           setContainerWidth(Math.max(320, width));
-          setIsContainerReady(true);
+          return true;
         }
       }
+      return false;
     };
     
-    // Initial measurement with a small delay to ensure DOM is ready
-    const timeoutId = setTimeout(updateWidth, 50);
+    // Try multiple times with increasing delays to handle slow layouts
+    const timeoutIds: NodeJS.Timeout[] = [];
+    const retryWithDelay = (attempt: number) => {
+      if (attempt >= 5) return;
+      const delay = attempt * 50; // 0, 50, 100, 150, 200ms
+      const id = setTimeout(() => {
+        if (!updateWidth() && attempt < 4) {
+          retryWithDelay(attempt + 1);
+        }
+      }, delay);
+      timeoutIds.push(id);
+    };
     
-    const observer = new ResizeObserver((entries) => {
-      if (entries[0]?.contentRect?.width > 0) {
-        updateWidth();
-      }
+    // Initial attempt immediately
+    if (!updateWidth()) {
+      retryWithDelay(1);
+    }
+    
+    const observer = new ResizeObserver(() => {
+      updateWidth();
     });
     
     if (containerRef.current) {
@@ -144,7 +160,7 @@ const UserDashboard = ({ hideHeader = false }: UserDashboardProps) => {
     window.addEventListener('resize', updateWidth);
     
     return () => {
-      clearTimeout(timeoutId);
+      timeoutIds.forEach(id => clearTimeout(id));
       observer.disconnect();
       window.removeEventListener('resize', updateWidth);
     };
@@ -1833,24 +1849,16 @@ const UserDashboard = ({ hideHeader = false }: UserDashboardProps) => {
 
       {/* Scrollable widgets area - only this part scrolls */}
       <div className="flex-1 overflow-auto px-2 sm:px-4 py-4" ref={containerRef}>
-        {isContainerReady ? (
-          <ResizableDashboard
-            isResizeMode={isResizeMode}
-            visibleWidgets={visibleWidgets}
-            widgetLayouts={widgetLayouts}
-            pendingWidgetChanges={pendingWidgetChanges}
-            onLayoutChange={handleLayoutChange}
-            onWidgetRemove={handleWidgetRemove}
-            renderWidget={renderWidget}
-            containerWidth={containerWidth}
-          />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-pulse">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="h-32 rounded-lg bg-muted/50" />
-            ))}
-          </div>
-        )}
+        <ResizableDashboard
+          isResizeMode={isResizeMode}
+          visibleWidgets={visibleWidgets}
+          widgetLayouts={widgetLayouts}
+          pendingWidgetChanges={pendingWidgetChanges}
+          onLayoutChange={handleLayoutChange}
+          onWidgetRemove={handleWidgetRemove}
+          renderWidget={renderWidget}
+          containerWidth={containerWidth}
+        />
       </div>
       
       {/* Modals - outside scrollable area */}

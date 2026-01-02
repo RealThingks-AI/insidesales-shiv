@@ -27,6 +27,7 @@ import {
   Plus,
   Activity,
   Factory,
+  Pencil,
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -53,6 +54,7 @@ interface LeadDetailModalProps {
   onOpenChange: (open: boolean) => void;
   lead: Lead | null;
   onUpdate?: () => void;
+  onEdit?: (lead: Lead) => void;
 }
 
 export const LeadDetailModal = ({
@@ -60,6 +62,7 @@ export const LeadDetailModal = ({
   onOpenChange,
   lead,
   onUpdate,
+  onEdit,
 }: LeadDetailModalProps) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -117,15 +120,28 @@ export const LeadDetailModal = ({
                   )}
                 </div>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowActivityLogModal(true)}
-                className="gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                Log Activity
-              </Button>
+              <div className="flex items-center gap-2">
+                {onEdit && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEdit(lead)}
+                    className="gap-2"
+                  >
+                    <Pencil className="h-4 w-4" />
+                    Update
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowActivityLogModal(true)}
+                  className="gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  Log Activity
+                </Button>
+              </div>
             </div>
           </DialogHeader>
 

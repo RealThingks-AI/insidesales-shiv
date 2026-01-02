@@ -902,6 +902,11 @@ export const ContactTable = forwardRef<ContactTableRef, ContactTableProps>(({
         onOpenChange={setShowDetailModal}
         contact={viewingContact as any}
         onUpdate={fetchContacts}
+        onEdit={(contact) => {
+          setShowDetailModal(false);
+          setEditingContact(contact);
+          setShowModal(true);
+        }}
       />
 
       <ContactColumnCustomizer

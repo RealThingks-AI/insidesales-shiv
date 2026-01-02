@@ -858,6 +858,11 @@ const AccountTable = forwardRef<AccountTableRef, AccountTableProps>(({
         onOpenChange={setShowDetailModal}
         account={viewingAccount}
         onUpdate={fetchAccounts}
+        onEdit={(account) => {
+          setShowDetailModal(false);
+          setEditingAccount(account);
+          setShowModal(true);
+        }}
       />
 
       <SendEmailModal open={emailModalOpen} onOpenChange={setEmailModalOpen} recipient={emailRecipient} />

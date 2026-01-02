@@ -876,6 +876,11 @@ const LeadTable = forwardRef<LeadTableRef, LeadTableProps>(({
         onOpenChange={setShowDetailModal}
         lead={viewingLead}
         onUpdate={fetchLeads}
+        onEdit={(lead) => {
+          setShowDetailModal(false);
+          setEditingLead(lead);
+          setShowModal(true);
+        }}
       />
 
       <LeadColumnCustomizer 

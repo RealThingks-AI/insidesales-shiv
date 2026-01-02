@@ -32,6 +32,7 @@ import {
   BarChart3,
   Send,
   History,
+  Pencil,
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -63,6 +64,7 @@ interface ContactDetailModalProps {
   onOpenChange: (open: boolean) => void;
   contact: Contact | null;
   onUpdate?: () => void;
+  onEdit?: (contact: Contact) => void;
 }
 
 export const ContactDetailModal = ({
@@ -70,6 +72,7 @@ export const ContactDetailModal = ({
   onOpenChange,
   contact,
   onUpdate,
+  onEdit,
 }: ContactDetailModalProps) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [showActivityLogModal, setShowActivityLogModal] = useState(false);
@@ -152,15 +155,28 @@ export const ContactDetailModal = ({
                   )}
                 </div>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowActivityLogModal(true)}
-                className="gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                Log Activity
-              </Button>
+              <div className="flex items-center gap-2">
+                {onEdit && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEdit(contact)}
+                    className="gap-2"
+                  >
+                    <Pencil className="h-4 w-4" />
+                    Update
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowActivityLogModal(true)}
+                  className="gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  Log Activity
+                </Button>
+              </div>
             </div>
           </DialogHeader>
 

@@ -22,7 +22,8 @@ import {
   Loader2,
   Mail,
   Send,
-  History
+  History,
+  Pencil
 } from "lucide-react";
 import { format } from "date-fns";
 import { AccountActivityTimeline } from "./AccountActivityTimeline";
@@ -53,9 +54,10 @@ interface AccountDetailModalProps {
   onOpenChange: (open: boolean) => void;
   account: Account | null;
   onUpdate?: () => void;
+  onEdit?: (account: Account) => void;
 }
 
-export const AccountDetailModal = ({ open, onOpenChange, account, onUpdate }: AccountDetailModalProps) => {
+export const AccountDetailModal = ({ open, onOpenChange, account, onUpdate, onEdit }: AccountDetailModalProps) => {
   const { toast } = useToast();
   const [showActivityLog, setShowActivityLog] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -108,15 +110,28 @@ export const AccountDetailModal = ({ open, onOpenChange, account, onUpdate }: Ac
                   <AccountScoreBadge score={account.score || 0} />
                 </div>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowActivityLog(true)}
-                className="gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                Log Activity
-              </Button>
+              <div className="flex items-center gap-2">
+                {onEdit && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEdit(account)}
+                    className="gap-2"
+                  >
+                    <Pencil className="h-4 w-4" />
+                    Update
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowActivityLog(true)}
+                  className="gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  Log Activity
+                </Button>
+              </div>
             </div>
           </DialogHeader>
 

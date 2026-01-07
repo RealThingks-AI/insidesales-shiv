@@ -440,7 +440,7 @@ export const AccountDetailModal = ({ open, onOpenChange, account, onUpdate, onEd
             </TabsContent>
 
             <TabsContent value="linked" className="mt-4 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {/* Contacts */}
                 <Card>
                   <CardHeader className="pb-3">

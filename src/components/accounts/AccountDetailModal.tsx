@@ -393,7 +393,7 @@ export const AccountDetailModal = ({
             </TabsContent>
 
             <TabsContent value="linked" className="mt-4 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Contacts */}
                 <Card>
                   <CardHeader className="pb-3">
@@ -468,40 +468,6 @@ export const AccountDetailModal = ({
                   </CardContent>
                 </Card>
 
-                {/* Meetings */}
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      Meetings ({meetings.length})
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    {loadingMeetings ? <div className="flex items-center justify-center py-4">
-                        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                      </div> : meetings.length === 0 ? <div className="text-center py-4 text-muted-foreground">
-                        <Calendar className="h-6 w-6 mx-auto mb-2 opacity-50" />
-                        <p className="text-xs">No meetings yet</p>
-                      </div> : <ScrollArea className="h-[150px]">
-                        <div className="space-y-2">
-                          {meetings.map(meeting => <div key={meeting.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer" onClick={() => {
-                        setSelectedMeeting(meeting);
-                        setShowMeetingDetailModal(true);
-                      }}>
-                              <div className="min-w-0 flex-1">
-                                <p className="font-medium text-xs truncate">{meeting.subject}</p>
-                                <p className="text-xs text-muted-foreground">
-                                  {format(new Date(meeting.start_time), 'dd/MM/yyyy HH:mm')}
-                                </p>
-                              </div>
-                              <Badge className={`ml-2 text-xs ${getMeetingStatusColor(meeting.status)}`}>
-                                {meeting.status}
-                              </Badge>
-                            </div>)}
-                        </div>
-                      </ScrollArea>}
-                  </CardContent>
-                </Card>
 
                 {/* Deals */}
                 <Card>

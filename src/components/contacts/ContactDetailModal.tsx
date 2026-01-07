@@ -87,6 +87,7 @@ export const ContactDetailModal = ({
   const [tags, setTags] = useState<string[]>([]);
   const [accountName, setAccountName] = useState<string | null>(null);
   const [tasksRefreshToken, setTasksRefreshToken] = useState(0);
+  const [activityRefreshToken, setActivityRefreshToken] = useState(0);
 
   // Linked data
   const [meetings, setMeetings] = useState<Meeting[]>([]);
@@ -180,6 +181,7 @@ export const ContactDetailModal = ({
     }
   };
   const handleActivityLogged = () => {
+    setActivityRefreshToken(prev => prev + 1);
     onUpdate?.();
   };
   const getMeetingStatusColor = (status: string) => {
@@ -437,7 +439,7 @@ export const ContactDetailModal = ({
                   Log Activity
                 </Button>
               </div>
-              <ContactActivityTimeline contactId={contact.id} />
+              <ContactActivityTimeline contactId={contact.id} key={activityRefreshToken} />
             </TabsContent>
 
             <TabsContent value="emails" className="mt-4">

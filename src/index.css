@@ -468,15 +468,13 @@ All colors MUST be HSL.
   animation: dialog-content-out 0.2s ease-in;
 }
 
-/* Ensure dialog content always has pointer events enabled */
+/* Enhanced modal styling for better visibility */
 [data-radix-dialog-content] {
-  pointer-events: auto !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+              0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
-/* Ensure inputs within dialogs are always interactive */
-[data-radix-dialog-content] input,
-[data-radix-dialog-content] textarea,
-[data-radix-dialog-content] select,
-[data-radix-dialog-content] button {
-  pointer-events: auto !important;
+/* Prevent background scroll when dialog is open */
+body:has([data-radix-dialog-overlay]) {
+  overflow: hidden;
 }

@@ -323,8 +323,8 @@ export const DealForm = ({ deal, isOpen, onClose, onSave, isCreating = false, in
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose} modal={false}>
-      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col overflow-hidden" disableOutsidePointerEvents={false}>
+    <Dialog open={isOpen} onOpenChange={onClose} modal={true}>
+      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
         <DialogHeader className="flex-shrink-0">
           <div className="flex items-center justify-between">
             <div>

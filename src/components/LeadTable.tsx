@@ -578,10 +578,10 @@ const LeadTable = forwardRef<LeadTableRef, LeadTableProps>(({
           {loading ? (
             <TableSkeleton columns={visibleColumns.length + 2} rows={10} />
           ) : (
-            <Table>
+            <Table className="table-fixed w-full">
               <TableHeader>
                 <TableRow className="sticky top-0 z-20 bg-muted border-b-2">
-                  <TableHead className="w-12 text-center font-bold text-foreground">
+                  <TableHead className="w-[50px] text-center font-bold text-foreground">
                     <div className="flex justify-center">
                       <Checkbox 
                         checked={selectedLeads.length > 0 && selectedLeads.length === Math.min(pageLeads.length, 50)} 
@@ -589,21 +589,39 @@ const LeadTable = forwardRef<LeadTableRef, LeadTableProps>(({
                       />
                     </div>
                   </TableHead>
-                  {visibleColumns.map(column => (
-                    <TableHead 
-                      key={column.field} 
-                      className="text-left font-bold text-foreground px-4 py-3 whitespace-nowrap min-w-[80px]"
-                    >
-                      <div 
-                        className="group flex items-center gap-2 cursor-pointer hover:text-primary" 
-                        onClick={() => handleSort(column.field)}
+                  {visibleColumns.map(column => {
+                    // Define fixed widths for each column type
+                    const getColumnWidth = (field: string) => {
+                      switch (field) {
+                        case 'lead_name': return 'w-[150px]';
+                        case 'account_company_name': return 'w-[140px]';
+                        case 'position': return 'w-[130px]';
+                        case 'email': return 'w-[180px]';
+                        case 'phone_no': return 'w-[120px]';
+                        case 'lead_status': return 'w-[100px]';
+                        case 'contact_source': return 'w-[100px]';
+                        case 'linkedin': return 'w-[100px]';
+                        case 'created_time': return 'w-[150px]';
+                        case 'contact_owner': return 'w-[150px]';
+                        default: return 'w-[120px]';
+                      }
+                    };
+                    return (
+                      <TableHead 
+                        key={column.field} 
+                        className={`${getColumnWidth(column.field)} text-left font-bold text-foreground px-4 py-3 whitespace-nowrap`}
                       >
-                        {column.label}
-                        {getSortIcon(column.field)}
-                      </div>
-                    </TableHead>
-                  ))}
-                  <TableHead className="text-center font-bold text-foreground w-48 px-4 py-3">
+                        <div 
+                          className="group flex items-center gap-2 cursor-pointer hover:text-primary" 
+                          onClick={() => handleSort(column.field)}
+                        >
+                          {column.label}
+                          {getSortIcon(column.field)}
+                        </div>
+                      </TableHead>
+                    );
+                  })}
+                  <TableHead className="w-[100px] text-center font-bold text-foreground px-4 py-3">
                     Actions
                   </TableHead>
                 </TableRow>
@@ -651,7 +669,7 @@ const LeadTable = forwardRef<LeadTableRef, LeadTableProps>(({
                       {visibleColumns.map(column => (
                         <TableCell 
                           key={column.field} 
-                          className="text-left px-4 py-3 align-middle whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]"
+                          className="text-left px-4 py-3 align-middle whitespace-nowrap overflow-hidden text-ellipsis"
                         >
                           {column.field === 'lead_name' ? (
                             <button 

@@ -419,7 +419,7 @@ All colors MUST be HSL.
   }
 }
 
-/* Smooth Dialog Animations */
+/* Smooth Dialog Animations with cubic-bezier easing */
 @keyframes dialog-overlay-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -433,7 +433,7 @@ All colors MUST be HSL.
 @keyframes dialog-content-in {
   from { 
     opacity: 0; 
-    transform: translate(-50%, -48%) scale(0.96);
+    transform: translate(-50%, -48%) scale(0.97);
   }
   to { 
     opacity: 1; 
@@ -448,24 +448,24 @@ All colors MUST be HSL.
   }
   to { 
     opacity: 0; 
-    transform: translate(-50%, -48%) scale(0.96);
+    transform: translate(-50%, -48%) scale(0.97);
   }
 }
 
 [data-state="open"] > [data-radix-dialog-overlay] {
-  animation: dialog-overlay-in 0.2s ease-out;
+  animation: dialog-overlay-in 0.25s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 [data-state="closed"] > [data-radix-dialog-overlay] {
-  animation: dialog-overlay-out 0.15s ease-in;
+  animation: dialog-overlay-out 0.2s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 [data-state="open"] > [data-radix-dialog-content] {
-  animation: dialog-content-in 0.25s ease-out;
+  animation: dialog-content-in 0.3s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 [data-state="closed"] > [data-radix-dialog-content] {
-  animation: dialog-content-out 0.2s ease-in;
+  animation: dialog-content-out 0.2s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 /* Enhanced modal styling for better visibility */
@@ -477,4 +477,29 @@ All colors MUST be HSL.
 /* Prevent background scroll when dialog is open */
 body:has([data-radix-dialog-overlay]) {
   overflow: hidden;
+}
+
+/* Global smooth transition utilities */
+.transition-smooth {
+  transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* GPU-accelerated transforms for smoother animations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

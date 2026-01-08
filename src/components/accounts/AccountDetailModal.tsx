@@ -13,6 +13,7 @@ import { Task } from "@/types/task";
 import { Building2, Globe, Phone, MapPin, Factory, Clock, Plus, ExternalLink, Mail, Pencil, ListTodo, History, Link2, Activity, User, UserPlus, Briefcase, Calendar, Loader2 } from "lucide-react";
 import { RecordChangeHistory } from "@/components/shared/RecordChangeHistory";
 import { format } from "date-fns";
+import { formatDateTimeStandard } from "@/utils/formatUtils";
 import { AccountActivityTimeline } from "./AccountActivityTimeline";
 import { ActivityLogModal } from "./ActivityLogModal";
 import { AttachRecordModal } from "@/components/shared/AttachRecordModal";
@@ -296,10 +297,6 @@ export const AccountDetailModal = ({
                     <Pencil className="h-4 w-4" />
                     Update
                   </Button>}
-                <Button variant="outline" size="sm" onClick={() => setShowActivityLog(true)} className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  Log Activity
-                </Button>
               </div>
             </div>
           </DialogHeader>
@@ -383,11 +380,11 @@ export const AccountDetailModal = ({
               <div className="flex items-center gap-4 text-xs text-muted-foreground">
                 {account.created_at && <span className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    Created: {format(new Date(account.created_at), 'dd/MM/yyyy')}
+                    Created: {formatDateTimeStandard(account.created_at)}
                   </span>}
                 {account.updated_at && <span className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    Updated: {format(new Date(account.updated_at), 'dd/MM/yyyy')}
+                    Updated: {formatDateTimeStandard(account.updated_at)}
                   </span>}
               </div>
             </TabsContent>
@@ -514,7 +511,7 @@ export const AccountDetailModal = ({
             </TabsContent>
 
             <TabsContent value="activity" className="mt-4" forceMount hidden={activeTab !== 'activity'}>
-              <AccountActivityTimeline key={refreshKey} accountId={account.id} />
+              <AccountActivityTimeline key={refreshKey} accountId={account.id} onAddActivity={() => setShowActivityLog(true)} />
             </TabsContent>
 
             <TabsContent value="history" className="mt-4" forceMount hidden={activeTab !== 'history'}>
